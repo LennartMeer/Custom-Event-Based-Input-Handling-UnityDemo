@@ -1,2 +1,2 @@
-# QR_System_Events_Demo
- A Demo for testing QR Input System Unity Integration
+# Custom Event Based Input Handling for the UnityEngine
+ A Demo for testing a QR-Code InputSystem Unity Integration.
