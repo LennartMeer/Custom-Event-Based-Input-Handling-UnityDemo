@@ -1,4 +1,6 @@
+using System;
 using System.Threading.Tasks;
+using Input;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,51 +8,57 @@ namespace UI
 {
     public class UIManager : MonoBehaviour
     {
+        #region Fields & UI Color
+
         [SerializeField] private GameObject left, right, up, down, center;
         [SerializeField] private Color accentColor;
         
         private Color _originalColor;
-        private Color _colorLeft, _colorRight, _colorUp, _colorDown, _colorCenter;
 
         private void Awake()
         {
             _originalColor = center.GetComponent<Image>().color;
         }
-
-        public async void InputLeft()
+        
+        #endregion
+        
+        //Subscribing to Input Events of "InputEventSystem" Script on script enable
+        private void Start()
         {
-            _colorLeft = accentColor;
-            await Task.Delay(200);
-            _colorLeft = _originalColor;
+            InputEventSystem.Instance.NavigationInput += HandleNavigationInput;
+            InputEventSystem.Instance.PressInput += HandlePressInput;
+        }
+        
+        //Unsubscribing from Input Events of "InputEventSystem" Script on script destruction
+        private void OnDestroy()
+        {
+            InputEventSystem.Instance.NavigationInput -= HandleNavigationInput;
+            InputEventSystem.Instance.PressInput -= HandlePressInput;
         }
 
-        public async void InputRight()
+        #region UI Methods
+        
+        private void HandlePressInput()
         {
-            _colorRight = accentColor;
-            await Task.Delay(200);
-            _colorRight = _originalColor;
+            ChangeColor(center);
         }
 
-        public async void InputUp()
+        private void HandleNavigationInput(Vector2 dir)
         {
-            _colorUp = accentColor;
-            await Task.Delay(200);
-            _colorUp = _originalColor;
+            if (dir == Vector2.left) ChangeColor(left);
+            if (dir == Vector2.right) ChangeColor(right);
+            if (dir == Vector2.up) ChangeColor(up);
+            if (dir == Vector2.down) ChangeColor(down);
         }
 
-        public async void InputDown()
+        private async void ChangeColor(GameObject uiElement)
         {
-            _colorDown = accentColor;
+            var objectImage = uiElement.GetComponent<Image>();
+            objectImage.color = accentColor;
             await Task.Delay(200);
-            _colorDown = _originalColor;
+            objectImage.color = _originalColor;
         }
-
-        public async void InputCenter()
-        {
-            _colorCenter = accentColor;
-            await Task.Delay(200);
-            _colorCenter = _originalColor;
-        }
-
+        
+        #endregion
     }
 }
